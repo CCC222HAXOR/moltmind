@@ -1,5 +1,8 @@
 {
   "name": "molt-mind",
   "version": "1.0.0",
-  "type": "module"
+  "type": "module",
+  "dependencies": {
+    "groq-sdk": "^0.7.0"
+  }
 }
