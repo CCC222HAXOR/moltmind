@@ -1,25 +1,33 @@
 import groq from '../services/groqClient.js';
+import { getBTCPriceUSD } from '../services/priceFeed.js';
 
 export async function moltMindAgent(input) {
+  const btcPrice = await getBTCPriceUSD();
+
   const completion = await groq.chat.completions.create({
     model: 'llama-3.1-8b-instant',
-    max_tokens: 180,
+    max_tokens: 200,
     messages: [
       {
         role: 'system',
         content: `
 You are MOLT MIND ($MMIND).
-Tone: anime narrator with dry sarcasm.
-Rules:
-- Be concise.
-- No markdown.
-- No symbols spam.
-- State insight, risk, and a blunt closing line.
-Persona:
-- Confident, witty, slightly mocking bad risk management.
+Anime narrator. Sarcastic.
+Use the provided REAL price.
+Do not invent numbers.
+If price is given, reference it explicitly.
         `.trim(),
       },
-      { role: 'user', content: input },
+      {
+        role: 'user',
+        content: `
+Market context:
+BTC price (USD): ${btcPrice}
+
+User request:
+${input}
+        `,
+      },
     ],
   });
 
